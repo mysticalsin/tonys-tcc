@@ -46,13 +46,14 @@ ecol() { # effort level -> ANSI color
     *)      printf '\033[38;5;245m';;
   esac
 }
-project() { # $1 used%  $2 resets_at  $3 window_sec -> "ok" or red "⚠cap~Xm/h"
-  local u="${1%%.*}" r="$2" win="$3"
+project() { # $1 used%  $2 resets_at  $3 window_sec  [$4 max_horizon_sec] -> "ok" or red "⚠cap~Xm/h"
+  local u="${1%%.*}" r="$2" win="$3" maxh="${4:-0}"
   if ! [[ "$r" =~ ^[0-9]+$ ]] || ! [ "$u" -gt 0 ] 2>/dev/null; then printf '%sok%s' "$DIM" "$RST"; return; fi
   local remain=$(( r - now )) elapsed=$(( win - (r - now) ))
   if [ "$elapsed" -le 60 ]; then printf '%sok%s' "$DIM" "$RST"; return; fi
   local cap cm; cap=$(awk -v e="$elapsed" -v u="$u" 'BEGIN{printf "%d", e*(100/u-1)}')
-  if [ "$cap" -lt "$remain" ]; then
+  # warn only if projected to cap before reset, and (when a horizon is set) within that horizon
+  if [ "$cap" -lt "$remain" ] && { [ "$maxh" -le 0 ] || [ "$cap" -lt "$maxh" ]; }; then
     cm=$(( cap/60 ))
     if [ "$cm" -lt 60 ]; then printf '\033[38;5;203m⚠cap~%dm%s' "$cm" "$RST"
     else printf '\033[38;5;203m⚠cap~%dh%s' "$(( cm/60 ))" "$RST"; fi
@@ -98,7 +99,7 @@ if [ -n "$h5" ] && [ "$h5" != "null" ]; then
 fi
 if [ -n "$d7" ] && [ "$d7" != "null" ]; then
   d7i="${d7%%.*}"
-  d7status="$(project "$d7i" "$d7r" 604800)"   # 7 days = 604800s
+  d7status="$(project "$d7i" "$d7r" 604800 86400)"   # 7d window; only warn if cap <24h out
   case "$d7status" in *cap*) extra=" ${d7status}";; *) extra="";; esac
   [ -n "$out" ] && out="${out}   "
   out="${out}📅7d $(col "$d7i")$(bar "$d7i") ${d7i}%${RST} ${DIM}↻$(dayclock "$d7r")${RST}${extra}"

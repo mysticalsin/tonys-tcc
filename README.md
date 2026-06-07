@@ -91,6 +91,7 @@ cc-tokens blocks --active   # current 5h block: time left + projected total + co
 | Compact warning | `≥85%` | `ctx` mode |
 | Bar width | `5` | `bar()` |
 | Block lengths | `18000`s / `604800`s | `project()` calls |
+| 7-day warn horizon | `86400`s (only warn if cap <24h out) | `limits` mode 7d call |
 
 ---
 
