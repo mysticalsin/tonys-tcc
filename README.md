@@ -1,6 +1,6 @@
-# Tony's Claude Code taskbar
+# Tony's TCC
 
-A smart, color-coded status line for [Claude Code](https://claude.com/claude-code) — see your model, thinking effort, context, cost, token burn, and **how close you are to your usage limits** at a glance. Colors and warnings fire automatically as you approach a wall.
+**The Claude Code bar + Sam, in one repo.** A smart, color-coded Claude Code status line — model, thinking effort, context, cost, token burn, and **how close you are to your usage limits** at a glance, with a flowing rainbow rule above your input — plus **Sam**, a voice layer for talking to Claude Code. Colors and warnings fire automatically as you approach a wall.
 
 Built on [ccstatusline](https://github.com/sirmalloc/ccstatusline) with a small shell colorizer (`cc-health.sh`) that turns the raw status JSON into traffic-light signals — now with a **flowing 24-bit rainbow** rule above your input, and **Sam**, a voice layer that lets you *talk to Claude Code* (Superwhisper dictates in; `sam` speaks the reply back via ElevenLabs).
 
@@ -89,6 +89,7 @@ Then add the status line to your `~/.claude/settings.json` (see [`examples/statu
 | `.claude/bin/cc-health.sh` | Status colorizer — reads status JSON on stdin, prints colored `effort` / `ctx` / `limits` segments |
 | `.claude/bin/cc-tokens` | On-demand token/cost report across all projects (wraps [ccusage](https://github.com/ryoppippi/ccusage)) |
 | `.claude/bin/sam` | Sam's voice-out — speaks Claude's last reply via ElevenLabs (on demand) |
+| `samantha/` | The fuller voice CLI (pluggable ElevenLabs / MisoTTS, goal tracking, auto-compact) — optional; `sam` covers the simple case |
 | `.config/ccstatusline/settings.json` | ccstatusline widget layout (uses `$HOME` paths — portable) |
 | `examples/statusLine.json` | The `statusLine` snippet to add to your own settings |
 

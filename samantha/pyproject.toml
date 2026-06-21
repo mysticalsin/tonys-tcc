@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "samantha-cli"
+version = "0.1.0"
+description = "Give Claude a voice. A voice assistant powered by Claude, inspired by Her."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [{name = "Ethan Rogers", email = "ethan@ethanplus.ai"}]
+keywords = ["ai", "voice", "assistant", "claude", "tts", "speech"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "elevenlabs",
+    "rich>=13",
+    "click>=8",
+    "pyyaml>=6",
+]
+
+[project.optional-dependencies]
+voice-input = [
+    "SpeechRecognition>=3.10",
+    "PyAudio>=0.2.14",
+]
+# Local MisoTTS backend (tts_provider: miso). The 8B model runs on-device:
+# free and private, but heavy (~35 GB weights, downloaded on first use) and
+# realistically wants a CUDA GPU -- on Apple Silicon MPS is unsupported, so it
+# falls back to CPU and is very slow. torch/torchaudio are intentionally NOT
+# hard-pinned in core (they're large and platform-specific); install them and
+# the MisoTTS `generator` module yourself:
+#
+#   pip install torch torchaudio
+#   git clone https://huggingface.co/MisoLabs/MisoTTS && pip install -e ./MisoTTS
+#   huggingface-cli login   # for the gated Llama-3.2 tokenizer
+#
+# This extra documents the requirement; the imports stay lazy so the rest of
+# Samantha works without any of it installed.
+miso = [
+    "torch",
+    "torchaudio",
+    # MisoTTS itself exposes the `generator` module; install from its repo:
+    #   pip install -e <path-to-MisoTTS>
+    # or, if you prefer pinning it here, reference the git source, e.g.:
+    #   "miso-tts @ git+https://huggingface.co/MisoLabs/MisoTTS",
+]
+dev = [
+    "pytest",
+]
+
+[project.scripts]
+samantha = "samantha.cli:main"
+
+[project.urls]
+Homepage = "https://ethanplus.ai"
+Repository = "https://github.com/ethanplusai/samantha-cli"
